@@ -1,0 +1,219 @@
+/* ============================================================================
+   Petrus Coffee — Design Tokens (framework-agnostic CSS custom properties)
+   ----------------------------------------------------------------------------
+   Single source of truth for runtime. Tailwind v4 mirrors these in theme.css;
+   the machine-readable copy lives in tokens.json. Reference tokens (raw scales)
+   feed semantic tokens (roles). Consume the SEMANTIC layer in product code,
+   not the raw scales, so a rebrand only touches the semantic block.
+
+   Palette: earthy coffee & natural wood — espresso brown, warm cream, caramel,
+   roasted-bean dark, with a small muted-olive botanical accent.
+   ============================================================================ */
+
+:root {
+  /* ---------------------------------------------------------------------------
+     1. REFERENCE — raw palettes (do not use directly in components)
+     ------------------------------------------------------------------------ */
+
+  /* Espresso — brand primary (roasted coffee browns) */
+  --espresso-50:  #f7f1eb;
+  --espresso-100: #ebddcf;
+  --espresso-200: #d8bfa6;
+  --espresso-300: #be9873;
+  --espresso-400: #9a6e44;
+  --espresso-500: #7a4e2e; /* mid coffee */
+  --espresso-600: #5c3a21; /* primary */
+  --espresso-700: #4a2e19;
+  --espresso-800: #38220f;
+  --espresso-900: #2e1e14; /* roasted bean — darkest */
+
+  /* Cream — warm paper canvas & surfaces */
+  --cream-50:  #fbf6ec; /* lightest surface (latte) */
+  --cream-100: #f5ede1; /* page canvas */
+  --cream-200: #efe3d2;
+  --cream-300: #e6d5be;
+  --cream-400: #d8c0a0;
+  --cream-500: #c7a87f;
+
+  /* Caramel — warm accent (amber drizzle) */
+  --caramel-300: #ddb877;
+  --caramel-400: #ce9f53;
+  --caramel-500: #c08a3e; /* accent */
+  --caramel-600: #a5722c; /* accent-strong / focus */
+
+  /* Wood — natural-wood secondary warmth */
+  --wood-400: #be8a63;
+  --wood-500: #a9744f;
+  --wood-600: #8a5d3d;
+
+  /* Olive — small botanical accent (coffee foliage) */
+  --olive-500: #6b7a4f;
+  --olive-600: #566540;
+
+  /* Warm neutrals for type */
+  --ink-900: #2e1e14; /* headings */
+  --ink-700: #3b2a1e; /* body text */
+  --ink-500: #7a6a5a; /* muted text */
+  --ink-400: #9c8e7e; /* subtle / disabled */
+
+  --white: #ffffff;
+
+  /* Feedback hues (kept warm-neutral) */
+  --success-500: #4f7a3f;
+  --warning-500: #c7902f;
+  --danger-500:  #b4472e;
+  --info-500:    #3c7ca6;
+
+  /* ---------------------------------------------------------------------------
+     2. SEMANTIC — roles (use THESE in components)
+     ------------------------------------------------------------------------ */
+
+  /* Surfaces & backgrounds */
+  --color-background:       var(--cream-100);   /* page canvas */
+  --color-surface:          var(--white);       /* raised cards */
+  --color-surface-cream:    var(--cream-50);    /* soft panels */
+  --color-surface-sunken:   var(--cream-200);
+  --color-surface-inverse:  var(--espresso-900);/* dark roasted-bean sections */
+
+  /* Brand / interactive */
+  --color-primary:          var(--espresso-600);
+  --color-primary-hover:    var(--espresso-700);
+  --color-primary-active:   var(--espresso-800);
+  --color-primary-subtle:   var(--espresso-100);
+  --color-on-primary:       #fdfbf7;
+  --color-accent:           var(--caramel-500);
+  --color-accent-strong:    var(--caramel-600);
+  --color-wood:             var(--wood-500);
+  --color-leaf:             var(--olive-500);
+
+  /* Text */
+  --color-heading:          var(--ink-900);
+  --color-text:             var(--ink-700);
+  --color-text-muted:       var(--ink-500);
+  --color-text-subtle:      var(--ink-400);
+  --color-text-on-inverse:  var(--cream-100);   /* text on dark */
+  --color-text-on-inverse-muted: var(--cream-500);
+  --color-link:             var(--espresso-500);
+
+  /* Lines & focus */
+  --color-border:           rgba(46, 30, 20, 0.12);
+  --color-border-strong:    rgba(46, 30, 20, 0.20);
+  --color-border-inverse:   rgba(245, 237, 225, 0.20);
+  --color-focus-ring:       var(--caramel-600); /* readable on cream AND dark */
+
+  /* Feedback (role aliases) */
+  --color-success:          var(--success-500);
+  --color-warning:          var(--warning-500);
+  --color-danger:           var(--danger-500);
+  --color-info:             var(--info-500);
+
+  /* ---------------------------------------------------------------------------
+     3. TYPOGRAPHY
+     ------------------------------------------------------------------------ */
+  --font-display: "Fraunces", "Georgia", "Times New Roman", serif;
+  --font-sans:    "Manrope", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono:    ui-monospace, "SF Mono", "JetBrains Mono", "Roboto Mono", monospace;
+
+  /* Fluid display sizes (Fraunces, sentence case). Min → preferred → max. */
+  --text-display-2xl: clamp(3rem, 1.8rem + 6vw, 6.5rem);   /* hero */
+  --text-display-xl:  clamp(2.5rem, 1.6rem + 4.5vw, 5rem);
+  --text-display-lg:  clamp(2rem, 1.4rem + 3vw, 3.5rem);   /* section titles */
+  --text-display-md:  clamp(1.6rem, 1.2rem + 2vw, 2.4rem);
+
+  /* Body / UI scale (Manrope) */
+  --text-3xl:  1.875rem; /* 30 */
+  --text-2xl:  1.5rem;   /* 24 */
+  --text-xl:   1.25rem;  /* 20 */
+  --text-lg:   1.125rem; /* 18 */
+  --text-base: 1rem;     /* 16 */
+  --text-sm:   0.875rem; /* 14 */
+  --text-xs:   0.75rem;  /* 12 */
+  --text-2xs:  0.6875rem;/* 11 — labels/eyebrows */
+
+  --leading-display: 1.02;
+  --leading-tight:   1.15;
+  --leading-snug:    1.3;
+  --leading-normal:  1.55;
+  --leading-relaxed: 1.7;
+
+  --tracking-display: -0.015em;
+  --tracking-tight:   -0.01em;
+  --tracking-normal:  0;
+  --tracking-wide:    0.04em;
+  --tracking-label:   0.16em; /* uppercase eyebrows / data labels */
+
+  --weight-regular:  400;
+  --weight-medium:   500;
+  --weight-semibold: 600;
+  --weight-bold:     700;
+  --weight-black:    900; /* Fraunces display */
+
+  /* ---------------------------------------------------------------------------
+     4. SPACING & LAYOUT  (4px base unit)
+     ------------------------------------------------------------------------ */
+  --space-0:  0;
+  --space-1:  0.25rem;
+  --space-2:  0.5rem;
+  --space-3:  0.75rem;
+  --space-4:  1rem;
+  --space-5:  1.25rem;
+  --space-6:  1.5rem;
+  --space-8:  2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+  --space-20: 5rem;
+  --space-24: 6rem;
+
+  --container-max:    1200px;
+  --container-gutter: clamp(1rem, 4vw, 2.5rem);
+  --section-py:       clamp(3.5rem, 8vw, 7rem);
+
+  /* ---------------------------------------------------------------------------
+     5. RADII  (soft, rounded — cosy)
+     ------------------------------------------------------------------------ */
+  --radius-sm:   0.5rem;
+  --radius-md:   0.875rem;
+  --radius-lg:   1.25rem;  /* cards */
+  --radius-xl:   1.75rem;  /* feature panels */
+  --radius-2xl:  2.5rem;   /* hero media */
+  --radius-pill: 9999px;
+
+  /* ---------------------------------------------------------------------------
+     6. ELEVATION  (warm, low-opacity shadows)
+     ------------------------------------------------------------------------ */
+  --shadow-xs: 0 1px 2px rgba(46, 30, 20, 0.06);
+  --shadow-sm: 0 2px 10px rgba(46, 30, 20, 0.07);
+  --shadow-md: 0 10px 30px rgba(46, 30, 20, 0.10);
+  --shadow-lg: 0 22px 55px rgba(46, 30, 20, 0.16);
+  --shadow-focus: 0 0 0 3px rgba(165, 114, 44, 0.40);
+
+  /* ---------------------------------------------------------------------------
+     7. MOTION
+     ------------------------------------------------------------------------ */
+  --duration-fast: 150ms;
+  --duration:      260ms;
+  --duration-slow: 420ms;
+  --ease-out:        cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ease-in-out:     cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-emphasized: cubic-bezier(0.2, 0, 0, 1);
+
+  /* ---------------------------------------------------------------------------
+     8. Z-INDEX
+     ------------------------------------------------------------------------ */
+  --z-base:    0;
+  --z-raised:  10;
+  --z-sticky:  100;
+  --z-overlay: 200;
+  --z-modal:   300;
+  --z-toast:   400;
+}
+
+/* Respect reduced-motion globally for token-driven transitions. */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --duration-fast: 1ms;
+    --duration: 1ms;
+    --duration-slow: 1ms;
+  }
+}

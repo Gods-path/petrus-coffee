@@ -1,0 +1,182 @@
+/* ============================================================================
+   Petrus Coffee — Tailwind CSS v4 theme
+   ----------------------------------------------------------------------------
+   Import this ONCE at the top of your global stylesheet (e.g. app/globals.css):
+
+       @import "tailwindcss";
+       @import "../docs/design/tokens/theme.css";   // adjust the path
+
+   Every value here mirrors tokens.css. Tailwind v4 auto-generates utilities
+   from @theme variables:
+       --color-primary        → bg-primary / text-primary / border-primary
+       --font-display         → font-display
+       --text-display-lg      → text-display-lg
+       --radius-pill          → rounded-pill
+       --shadow-md            → shadow-md
+
+   Palette: earthy coffee & natural wood.
+   ============================================================================ */
+
+@theme {
+  /* ---- Color: reference scales (available as e.g. bg-espresso-600) -------- */
+  --color-espresso-50:  #f7f1eb;
+  --color-espresso-100: #ebddcf;
+  --color-espresso-200: #d8bfa6;
+  --color-espresso-300: #be9873;
+  --color-espresso-400: #9a6e44;
+  --color-espresso-500: #7a4e2e;
+  --color-espresso-600: #5c3a21;
+  --color-espresso-700: #4a2e19;
+  --color-espresso-800: #38220f;
+  --color-espresso-900: #2e1e14;
+
+  --color-cream-50:  #fbf6ec;
+  --color-cream-100: #f5ede1;
+  --color-cream-200: #efe3d2;
+  --color-cream-300: #e6d5be;
+  --color-cream-400: #d8c0a0;
+  --color-cream-500: #c7a87f;
+
+  --color-caramel-300: #ddb877;
+  --color-caramel-400: #ce9f53;
+  --color-caramel-500: #c08a3e;
+  --color-caramel-600: #a5722c;
+
+  --color-wood-400: #be8a63;
+  --color-wood-500: #a9744f;
+  --color-wood-600: #8a5d3d;
+
+  --color-olive-500: #6b7a4f;
+  --color-olive-600: #566540;
+
+  --color-ink-400: #9c8e7e;
+  --color-ink-500: #7a6a5a;
+  --color-ink-700: #3b2a1e;
+  --color-ink-900: #2e1e14;
+
+  /* ---- Color: semantic roles (prefer these in markup) -------------------- */
+  --color-background:      #f5ede1;
+  --color-surface:         #ffffff;
+  --color-surface-cream:   #fbf6ec;
+  --color-surface-sunken:  #efe3d2;
+  --color-surface-inverse: #2e1e14;
+
+  --color-primary:         #5c3a21;
+  --color-primary-hover:   #4a2e19;
+  --color-primary-active:  #38220f;
+  --color-primary-subtle:  #ebddcf;
+  --color-on-primary:      #fdfbf7;
+  --color-accent:          #c08a3e;
+  --color-accent-strong:   #a5722c;
+  --color-wood:            #a9744f;
+  --color-leaf:            #6b7a4f;
+
+  --color-heading:         #2e1e14;
+  --color-text:            #3b2a1e;
+  --color-text-muted:      #7a6a5a;
+  --color-text-subtle:     #9c8e7e;
+  --color-on-inverse:      #f5ede1;
+  --color-on-inverse-muted:#c7a87f;
+  --color-link:            #7a4e2e;
+
+  --color-border:          rgba(46, 30, 20, 0.12);
+  --color-border-strong:   rgba(46, 30, 20, 0.20);
+  --color-focus-ring:      #a5722c;
+
+  --color-success:         #4f7a3f;
+  --color-warning:         #c7902f;
+  --color-danger:          #b4472e;
+  --color-info:            #3c7ca6;
+
+  /* ---- Typography -------------------------------------------------------- */
+  --font-display: "Fraunces", "Georgia", "Times New Roman", serif;
+  --font-sans:    "Manrope", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono:    ui-monospace, "JetBrains Mono", "Roboto Mono", monospace;
+
+  --text-display-2xl: clamp(3rem, 1.8rem + 6vw, 6.5rem);
+  --text-display-2xl--line-height: 1.02;
+  --text-display-2xl--letter-spacing: -0.015em;
+  --text-display-xl:  clamp(2.5rem, 1.6rem + 4.5vw, 5rem);
+  --text-display-xl--line-height: 1.03;
+  --text-display-xl--letter-spacing: -0.015em;
+  --text-display-lg:  clamp(2rem, 1.4rem + 3vw, 3.5rem);
+  --text-display-lg--line-height: 1.05;
+  --text-display-lg--letter-spacing: -0.01em;
+  --text-display-md:  clamp(1.6rem, 1.2rem + 2vw, 2.4rem);
+  --text-display-md--line-height: 1.1;
+
+  --text-2xs: 0.6875rem;
+  --text-2xs--line-height: 1.4;
+  --text-xs:  0.75rem;
+  --text-sm:  0.875rem;
+  --text-base:1rem;
+  --text-lg:  1.125rem;
+  --text-xl:  1.25rem;
+  --text-2xl: 1.5rem;
+  --text-3xl: 1.875rem;
+
+  --tracking-tighter: -0.015em;
+  --tracking-tight:   -0.01em;
+  --tracking-wide:    0.04em;
+  --tracking-label:   0.16em;
+
+  --leading-display: 1.02;
+
+  /* ---- Radius ------------------------------------------------------------ */
+  --radius-sm:   0.5rem;
+  --radius-md:   0.875rem;
+  --radius-lg:   1.25rem;
+  --radius-xl:   1.75rem;
+  --radius-2xl:  2.5rem;
+  --radius-pill: 9999px;
+
+  /* ---- Shadows ----------------------------------------------------------- */
+  --shadow-xs: 0 1px 2px rgba(46, 30, 20, 0.06);
+  --shadow-sm: 0 2px 10px rgba(46, 30, 20, 0.07);
+  --shadow-md: 0 10px 30px rgba(46, 30, 20, 0.10);
+  --shadow-lg: 0 22px 55px rgba(46, 30, 20, 0.16);
+
+  /* ---- Motion ------------------------------------------------------------ */
+  --ease-out:        cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ease-emphasized: cubic-bezier(0.2, 0, 0, 1);
+
+  /* ---- Layout container -------------------------------------------------- */
+  --container-max: 1200px;
+
+  /* ---- Breakpoints (Tailwind defaults, restated for clarity) ------------- */
+  --breakpoint-sm: 40rem;
+  --breakpoint-md: 48rem;
+  --breakpoint-lg: 64rem;
+  --breakpoint-xl: 80rem;
+  --breakpoint-2xl: 96rem;
+}
+
+/* ----------------------------------------------------------------------------
+   Base layer: apply the brand canvas + type defaults.
+   ------------------------------------------------------------------------- */
+@layer base {
+  body {
+    background-color: var(--color-background);
+    color: var(--color-text);
+    font-family: var(--font-sans);
+    font-weight: 500;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Fraunces headings — elegant serif, sentence case (NOT uppercase). */
+  h1, h2, h3 {
+    font-family: var(--font-display);
+    color: var(--color-heading);
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    line-height: 1.08;
+  }
+
+  /* Visible, on-brand keyboard focus everywhere. */
+  :where(a, button, input, select, textarea, [tabindex]):focus-visible {
+    outline: 2px solid var(--color-focus-ring, #a5722c);
+    outline-offset: 2px;
+    border-radius: var(--radius-sm);
+  }
+}
