@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Fraunces, Manrope } from "next/font/google";
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
+import { ChatWidget } from "@/components/site/ChatWidget";
 import { site } from "@/data/site";
 import "./globals.css";
 
@@ -53,6 +54,7 @@ export default function RootLayout({
         <SiteHeader />
         <main id="main">{children}</main>
         <SiteFooter />
+        <ChatWidget />
       </body>
     </html>
   );

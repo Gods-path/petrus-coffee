@@ -1,0 +1,114 @@
+/* Petrus Coffee brand theme for the @n8n/chat widget.
+   Imported AFTER "@n8n/chat/style.css" so these :root overrides win. */
+:root {
+  /* Brand colours (earthy espresso + caramel).
+     NOTE: @n8n/chat's own stylesheet is inconsistent about the number of
+     dashes it uses when reading these custom properties — most rules read
+     the DOUBLE-dash form (e.g. `var(--chat--color--primary)`,
+     `var(--chat--color--secondary)`, `var(--chat--color--primary-shade-50)`,
+     `var(--chat--color--primary--shade-100)`), a few read the SINGLE-dash
+     form (`var(--chat--color-secondary-shade-50)`). We set BOTH spellings
+     for primary/secondary + shades so every rule (buttons, send icon,
+     links, quick-reply pills) resolves to the brand colour instead of
+     falling back to n8n's default teal/pink. Values = tokens.css espresso &
+     caramel ramp (also mirrored in theme.css `--color-primary*` /
+     `--color-accent*`). */
+  --chat--color--primary: #5c3a21;        /* espresso-600 / --color-primary */
+  --chat--color-primary: #5c3a21;
+  --chat--color--primary-shade-50: #4a2e19;   /* espresso-700 / --color-primary-hover */
+  --chat--color-primary-shade-50: #4a2e19;
+  --chat--color--primary--shade-100: #38220f; /* espresso-800 / --color-primary-active */
+  --chat--color-primary-shade-100: #38220f;
+  --chat--color--secondary: #c08a3e;      /* caramel-500 / --color-accent */
+  --chat--color-secondary: #c08a3e;
+  --chat--color--secondary-shade-50: #a5722c; /* caramel-600 / --color-accent-strong */
+  --chat--color-secondary-shade-50: #a5722c;
+
+  --chat--color-white: #ffffff;
+  --chat--color-light: #fbf6ec;
+  --chat--color-light-shade-50: #f5ede1;
+  --chat--color-light-shade-100: #efe3d2;
+  --chat--color-medium: #d8c0a0;
+  --chat--color-dark: #2e1e14;
+  --chat--color-typing: #7a6a5a;
+
+  --chat--font-family: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
+  --chat--border-radius: 0.875rem;
+  --chat--transition-duration: 0.2s;
+
+  /* Window placement — above the sticky header (z 100) and menu category nav
+     (z 90) so it isn't punched through by them, but below the reservation
+     modal (z 300). */
+  --chat--window--width: 380px;
+  --chat--window--height: 600px;
+  --chat--window--z-index: 200;
+  --chat--window--border-radius: 1.25rem;
+
+  /* Header — roasted-bean band with cream text, matching site inverse sections */
+  --chat--header--background: #2e1e14;
+  --chat--header--color: #f5ede1;
+  --chat--heading--font-size: 1.25rem;
+  --chat--subtitle--font-size: 0.875rem;
+
+  /* Toggle button (the floating launcher) */
+  --chat--toggle--background: #5c3a21;
+  --chat--toggle--hover--background: #4a2e19;
+  --chat--toggle--active--background: #38220f;
+  --chat--toggle--color: #fdfbf7;
+  --chat--toggle--size: 60px;
+
+  /* Message bubbles */
+  --chat--message--bot--background: #f5ede1;
+  --chat--message--bot--color: #3b2a1e;
+  --chat--message--user--background: #5c3a21;
+  --chat--message--user--color: #fdfbf7;
+
+  --chat--body--background: #ffffff;
+
+  /* Input field — style.css renders the textarea as
+     `color: var(--chat--input--text-color, initial)`. Left unset, "initial"
+     can render invisible/near-invisible text (e.g. under forced-dark
+     rendering, canvastext resolves light-on-light against the white input
+     background). Set it explicitly to the body-text ink token and give the
+     field an explicit light surface + visible border so it reads clearly. */
+  --chat--input--text-color: #3b2a1e;           /* ink-700 / --color-text (body text) */
+  --chat--input--background: #ffffff;           /* --color-surface */
+  --chat--input--container--background: #ffffff; /* --color-surface */
+  --chat--input--container--border: 1px solid rgba(46, 30, 20, 0.12); /* --color-border */
+  --chat--input--placeholder--font-size: 0.875rem; /* --text-sm */
+}
+
+/* Belt-and-braces: guard against any forced/auto dark-mode repaint of the
+   textarea (the vendor rule only sets `color`, not `color-scheme`). */
+.chat-inputs textarea {
+  color-scheme: light;
+}
+
+/* Placeholder colour in style.css falls back to an n8n design-system
+   variable (`--color--text--tint-1`) that this package never defines, so
+   the placeholder can render invisible/near-invisible. Set it directly to
+   the muted-text token; !important guards against the vendor rule's extra
+   `[data-v-*]` attribute selector, which is more specific than a plain
+   class selector and would otherwise win the cascade. */
+.chat-inputs textarea::placeholder {
+  color: #7a6a5a !important; /* ink-500 / --color-text-muted */
+}
+
+/* Vendor `.chat-button:focus` (used by "New conversation" / quick-reply
+   buttons) hardcodes a non-brand Bootstrap-blue ring
+   (`box-shadow:0 0 0 .2rem #007bff40`). Replace with the site's caramel
+   focus ring per style-guide.md ("The focus ring is caramel-600 #A5722C" /
+   "visible focus is the 2px caramel ring ... never removed"). Loaded after
+   style.css with equal selector specificity, so this wins on source order. */
+.chat-button:focus {
+  outline: 2px solid #a5722c; /* --color-focus-ring / caramel-600 */
+  outline-offset: 2px;
+  box-shadow: none;
+}
+
+/* Remove ONLY the "Powered by n8n" attribution. Do NOT hide `.chat-footer` —
+   in @n8n/chat's Layout the footer slot wraps the message INPUT, so hiding it
+   removes the text box (you can't type). The powered-by is its own element. */
+.chat-powered-by {
+  display: none !important;
+}
