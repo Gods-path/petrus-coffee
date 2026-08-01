@@ -23,7 +23,7 @@ export function Section({
 } & React.ComponentProps<"section">) {
   return (
     <section
-      className={cn("py-[var(--section-py)]", toneClasses[tone], className)}
+      className={cn("py-section", toneClasses[tone], className)}
       {...props}
     >
       <Container className={containerClassName}>{children}</Container>

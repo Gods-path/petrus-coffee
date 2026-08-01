@@ -38,9 +38,20 @@ export function Hero() {
           served in a room built for lingering. Come for the cup, stay for the company.
         </p>
 
+        {/* Booking is the business goal, so it takes the one cream fill on this
+            band (components.md: `inverse` is the primary action on dark/imagery).
+            Browsing the menu is the low-commitment alternative and is demoted to
+            an outline — previously it out-shouted the CTA it sits beside. */}
         <div className="animate-rise mt-9 flex flex-wrap items-center gap-3 [animation-delay:240ms]">
-          <ReserveDialog size="lg" />
-          <Link href="/menu" className={buttonClasses("inverse", "lg")}>
+          <ReserveDialog size="lg" variant="inverse" />
+          <Link
+            href="/menu"
+            className={buttonClasses(
+              "inverse",
+              "lg",
+              "border border-cream-100/70 bg-transparent text-white shadow-none hover:bg-white/10",
+            )}
+          >
             View the menu
           </Link>
         </div>

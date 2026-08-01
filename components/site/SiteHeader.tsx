@@ -29,7 +29,7 @@ export function SiteHeader() {
                 href={item.href}
                 aria-current={active ? "page" : undefined}
                 className={cn(
-                  "rounded-pill px-4 py-2 text-sm font-semibold transition-colors",
+                  "inline-flex min-h-11 items-center rounded-pill px-4 py-3 text-sm font-semibold transition-colors",
                   active
                     ? "bg-primary/10 text-primary"
                     : "text-text-muted hover:bg-surface-cream hover:text-heading",

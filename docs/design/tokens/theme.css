@@ -67,20 +67,28 @@
   --color-primary-subtle:  #ebddcf;
   --color-on-primary:      #fdfbf7;
   --color-accent:          #c08a3e;
-  --color-accent-strong:   #a5722c;
+  /* Every consumer of accent-strong is 11px bold label text (Eyebrow, Badge,
+     Logo tagline), which does NOT qualify for the large-text allowance. At
+     #a5722c that measured 3.59:1 on cream. #8c5a2b measures 5.01:1 on cream,
+     4.63:1 on the accent/15 badge fill. --color-accent (decorative marks,
+     bean dot, focus glow) is unchanged. */
+  --color-accent-strong:   #8c5a2b;
   --color-wood:            #a9744f;
   --color-leaf:            #6b7a4f;
 
   --color-heading:         #2e1e14;
   --color-text:            #3b2a1e;
-  --color-text-muted:      #7a6a5a;
-  --color-text-subtle:     #9c8e7e;
+  /* Both raised to clear WCAG AA against the worst-case surface, the cream
+     background (#f5ede1) — not just white. Previously 4.48:1 and 2.75:1. */
+  --color-text-muted:      #6b5b4c;  /* 5.61 on cream, 6.51 on white */
+  --color-text-subtle:     #786754;  /* 4.68 on cream, 5.43 on white */
   --color-on-inverse:      #f5ede1;
   --color-on-inverse-muted:#c7a87f;
   --color-link:            #7a4e2e;
 
   --color-border:          rgba(46, 30, 20, 0.12);
   --color-border-strong:   rgba(46, 30, 20, 0.20);
+  --color-border-inverse:  rgba(245, 237, 225, 0.20);
   --color-focus-ring:      #a5722c;
 
   --color-success:         #4f7a3f;
@@ -142,6 +150,11 @@
 
   /* ---- Layout container -------------------------------------------------- */
   --container-max: 1200px;
+
+  /* Section rhythm (style-guide §4). Extends the spacing scale, so this is
+     consumed as `py-section` — not `py-[var(--section-py)]`, which silently
+     resolved to 0 because tokens.css is documentation and is never imported. */
+  --spacing-section: clamp(3.5rem, 8vw, 7rem);
 
   /* ---- Breakpoints (Tailwind defaults, restated for clarity) ------------- */
   --breakpoint-sm: 40rem;

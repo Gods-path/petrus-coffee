@@ -17,11 +17,27 @@
     html {
       scroll-behavior: auto;
     }
+
+    /* Components hardcode their own durations (button lifts, the 1.04 card-image
+       zoom), so honouring the preference needs a blanket rule — the token-level
+       collapse described in the style guide lives in tokens.css, which the app
+       never imports. Not `animation: none`: that would skip animationend
+       handlers and can strand elements mid-state. */
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
   }
 
-  /* Anchor targets clear the sticky header when using in-page nav. */
+  /* Anchor targets clear the sticky chrome when using in-page nav. On /menu
+     that is the 72px header *plus* the ~60px category bar, so 6rem buried the
+     heading you jumped to underneath the pills. */
   [id] {
-    scroll-margin-top: 6rem;
+    scroll-margin-top: 9rem;
   }
 
   ::selection {

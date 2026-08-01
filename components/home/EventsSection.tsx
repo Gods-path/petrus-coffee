@@ -17,7 +17,7 @@ export function EventsSection() {
       <ul className="mt-12 grid gap-6 md:grid-cols-2">
         {events.map((event) => (
           <li key={event.id}>
-            <article className="flex h-full flex-col overflow-hidden rounded-xl bg-espresso-800/60 ring-1 ring-[color:var(--color-border-inverse)]">
+            <article className="flex h-full flex-col overflow-hidden rounded-xl bg-espresso-800/60 ring-1 ring-border-inverse">
               <div className="relative aspect-[16/9] overflow-hidden">
                 <Image
                   src={event.image}

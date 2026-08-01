@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useId, useRef, useState } from "react";
-import { X, CalendarCheck, Check } from "lucide-react";
+import { createPortal } from "react-dom";
+import { X, CalendarCheck, Check, Loader2 } from "lucide-react";
 import {
   buttonClasses,
   type ButtonVariant,
@@ -16,7 +17,13 @@ type ReserveDialogProps = {
   className?: string;
 };
 
-type Details = { name: string; party: string; date: string; time: string };
+type Details = {
+  name: string;
+  phone: string;
+  party: string;
+  date: string;
+  time: string;
+};
 
 function prettyDate(value: string) {
   const d = new Date(`${value}T00:00:00`);
@@ -47,6 +54,7 @@ export function ReserveDialog({
   const [open, setOpen] = useState(false);
   const [confirmed, setConfirmed] = useState<Details | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [submitting, setSubmitting] = useState(false);
 
   const dialogRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
@@ -98,28 +106,68 @@ export function ReserveDialog({
     window.setTimeout(() => {
       setConfirmed(null);
       setError(null);
+      setSubmitting(false);
     }, 200);
   }
 
-  function onSubmit(e: React.FormEvent<HTMLFormElement>) {
+  async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    if (submitting) return;
+
+    // Read the form before any await — currentTarget is nulled after the handler.
     const form = new FormData(e.currentTarget);
     const details: Details = {
       name: String(form.get("name") ?? "").trim(),
+      phone: String(form.get("phone") ?? "").trim(),
       party: String(form.get("party") ?? ""),
       date: String(form.get("date") ?? ""),
       time: String(form.get("time") ?? ""),
     };
-    if (!details.name || !details.party || !details.date || !details.time) {
+    if (
+      !details.name ||
+      !details.phone ||
+      !details.party ||
+      !details.date ||
+      !details.time
+    ) {
       setError("Please fill in every field so we can hold your table.");
+      return;
+    }
+    if (details.phone.replace(/\D/g, "").length < 8) {
+      setError("Please enter a phone number we can reach you on.");
       return;
     }
     if (details.date < today()) {
       setError("Please choose today or a future date.");
       return;
     }
+
     setError(null);
-    setConfirmed(details);
+    setSubmitting(true);
+    try {
+      // Same-origin route handler; it holds the webhook URL and secret.
+      const res = await fetch("/api/reserve", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify(details),
+      });
+      const data = (await res.json().catch(() => null)) as
+        | { ok?: boolean; error?: string }
+        | null;
+
+      if (!res.ok || !data?.ok) {
+        setError(
+          data?.error ??
+            "We couldn't send that just now. Please try again, or call us.",
+        );
+        return;
+      }
+      setConfirmed(details);
+    } catch {
+      setError("We couldn't reach us just now — please check your connection.");
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   return (
@@ -133,9 +181,12 @@ export function ReserveDialog({
         {label}
       </button>
 
-      {open && (
+      {/* Portalled to <body>: an ancestor with a transform (e.g. .animate-rise,
+          which keeps translateY(0) via fill-mode both) would otherwise become
+          the containing block and the overlay would no longer track the viewport. */}
+      {open && createPortal(
         <div
-          className="fixed inset-0 z-[300] flex items-end justify-center p-0 sm:items-center sm:p-4"
+          className="fixed inset-0 z-[300] flex h-[100svh] items-end justify-center p-0 sm:items-center sm:p-4"
           role="presentation"
         >
           {/* backdrop */}
@@ -151,76 +202,93 @@ export function ReserveDialog({
             aria-modal="true"
             aria-labelledby={titleId}
             aria-describedby={descId}
-            className="relative w-full max-w-md rounded-t-2xl bg-surface p-6 shadow-lg sm:rounded-2xl sm:p-8"
+            className={cn(
+              "relative flex w-full max-w-md flex-col overflow-hidden rounded-t-2xl bg-surface shadow-lg",
+              "max-h-[92svh] sm:max-h-[calc(100svh-2rem)] sm:rounded-2xl",
+            )}
           >
             <button
               type="button"
               onClick={close}
               aria-label="Close reservation form"
-              className="absolute right-4 top-4 grid h-9 w-9 place-items-center rounded-pill text-text-muted hover:bg-surface-cream"
+              className="absolute right-3 top-3 z-10 grid h-11 w-11 place-items-center rounded-pill bg-surface/80 text-text-muted backdrop-blur-sm hover:bg-surface-cream"
             >
               <X size={18} aria-hidden />
             </button>
 
-            {confirmed ? (
-              <div className="pt-2 text-center">
-                <span className="mx-auto mb-4 grid h-14 w-14 place-items-center rounded-pill bg-primary/12 text-primary">
-                  <Check size={26} aria-hidden />
-                </span>
-                <h2 id={titleId} className="font-display text-2xl text-heading">
-                  Table noted
-                </h2>
-                <p id={descId} className="mt-3 text-text-muted">
-                  Thanks, {confirmed.name.split(" ")[0]} — your table for{" "}
-                  <strong className="text-text">{confirmed.party}</strong> on{" "}
-                  <strong className="text-text">{prettyDate(confirmed.date)}</strong> at{" "}
-                  <strong className="text-text">{prettyTime(confirmed.time)}</strong> is
-                  noted. We&apos;ll confirm by WhatsApp or email shortly.
-                </p>
-                <button
-                  type="button"
-                  onClick={close}
-                  className={buttonClasses("primary", "md", "mt-6 w-full")}
-                >
-                  Done
-                </button>
-              </div>
-            ) : (
-              <>
-                <div className="mb-5 flex items-center gap-3">
-                  <span className="grid h-11 w-11 place-items-center rounded-pill bg-primary/12 text-primary">
-                    <CalendarCheck size={22} aria-hidden />
+            <div className="overflow-y-auto overscroll-contain p-6 sm:p-8">
+              {confirmed ? (
+                <div role="status" aria-live="polite" className="pt-2 text-center">
+                  <span className="mx-auto mb-4 grid h-14 w-14 place-items-center rounded-pill bg-primary/12 text-primary">
+                    <Check size={26} aria-hidden />
                   </span>
-                  <div>
-                    <h2 id={titleId} className="font-display text-2xl text-heading">
-                      Reserve a table
-                    </h2>
-                    <p id={descId} className="text-sm text-text-muted">
-                      Tell us when you&apos;re coming and we&apos;ll save you a seat.
-                    </p>
-                  </div>
+                  <h2 id={titleId} className="font-display text-2xl text-heading">
+                    Table noted
+                  </h2>
+                  <p id={descId} className="mt-3 text-text-muted">
+                    Thanks, {confirmed.name.split(" ")[0]} — your table for{" "}
+                    <strong className="text-text">{confirmed.party}</strong> on{" "}
+                    <strong className="text-text">{prettyDate(confirmed.date)}</strong> at{" "}
+                    <strong className="text-text">{prettyTime(confirmed.time)}</strong>{" "}
+                    is noted. We&apos;ll confirm on{" "}
+                    <strong className="text-text">{confirmed.phone}</strong> shortly.
+                  </p>
+                  <button
+                    type="button"
+                    onClick={close}
+                    className={buttonClasses("primary", "md", "mt-6 w-full")}
+                  >
+                    Done
+                  </button>
                 </div>
+              ) : (
+                <>
+                  <div className="mb-5 flex items-center gap-3">
+                    <span className="grid h-11 w-11 place-items-center rounded-pill bg-primary/12 text-primary">
+                      <CalendarCheck size={22} aria-hidden />
+                    </span>
+                    <div>
+                      <h2 id={titleId} className="font-display text-2xl text-heading">
+                        Reserve a table
+                      </h2>
+                      <p id={descId} className="text-sm text-text-muted">
+                        Tell us when you&apos;re coming and we&apos;ll save you a seat.
+                      </p>
+                    </div>
+                  </div>
 
-                <form onSubmit={onSubmit} noValidate className="space-y-4">
-                  <Field label="Your name" htmlFor="res-name">
-                    <input
-                      ref={firstFieldRef}
-                      id="res-name"
-                      name="name"
-                      type="text"
-                      autoComplete="name"
-                      required
-                      placeholder="e.g. Ama Ngassa"
-                      className={fieldClass}
-                    />
-                  </Field>
+                  <form onSubmit={onSubmit} noValidate className="space-y-4">
+                    <Field label="Your name" htmlFor="res-name">
+                      <input
+                        ref={firstFieldRef}
+                        id="res-name"
+                        name="name"
+                        type="text"
+                        autoComplete="name"
+                        required
+                        placeholder="e.g. Ama Ngassa"
+                        className={fieldClass}
+                      />
+                    </Field>
 
-                  <div className="grid grid-cols-2 gap-4">
+                    {/* Required: without a contact channel the cafe cannot confirm
+                        the table or reach the guest if plans change. WhatsApp is
+                        the dominant channel in Douala, so phone leads. */}
+                    <Field label="Phone / WhatsApp" htmlFor="res-phone">
+                      <input
+                        id="res-phone"
+                        name="phone"
+                        type="tel"
+                        inputMode="tel"
+                        autoComplete="tel"
+                        required
+                        placeholder="e.g. +237 6 90 00 00 00"
+                        className={fieldClass}
+                      />
+                    </Field>
+
                     <Field label="Party size" htmlFor="res-party">
-                      <select id="res-party" name="party" required defaultValue="" className={fieldClass}>
-                        <option value="" disabled>
-                          Select
-                        </option>
+                      <select id="res-party" name="party" required defaultValue="2" className={fieldClass}>
                         {["1", "2", "3", "4", "5", "6", "7", "8", "9+"].map((n) => (
                           <option key={n} value={n}>
                             {n} {n === "1" ? "guest" : "guests"}
@@ -229,54 +297,79 @@ export function ReserveDialog({
                       </select>
                     </Field>
 
-                    <Field label="Time" htmlFor="res-time">
-                      <input
-                        id="res-time"
-                        name="time"
-                        type="time"
-                        required
-                        defaultValue="18:00"
-                        className={fieldClass}
-                      />
-                    </Field>
-                  </div>
+                    {/* Date before time: asking for a time first, pre-filled, ahead
+                        of an empty required date read as backwards. Single column
+                        until sm — two native pickers side by side are cramped at 320px. */}
+                    <div className="grid gap-4 sm:grid-cols-2">
+                      <Field label="Date" htmlFor="res-date">
+                        <input
+                          id="res-date"
+                          name="date"
+                          type="date"
+                          required
+                          min={today()}
+                          defaultValue={today()}
+                          className={fieldClass}
+                        />
+                      </Field>
 
-                  <Field label="Date" htmlFor="res-date">
-                    <input
-                      id="res-date"
-                      name="date"
-                      type="date"
-                      required
-                      min={today()}
-                      className={fieldClass}
-                    />
-                  </Field>
+                      <Field label="Time" htmlFor="res-time">
+                        <input
+                          id="res-time"
+                          name="time"
+                          type="time"
+                          required
+                          defaultValue="18:00"
+                          className={fieldClass}
+                        />
+                      </Field>
+                    </div>
 
-                  {error && (
-                    <p role="alert" className="text-sm font-medium text-danger">
-                      {error}
+                    {error && (
+                      <p role="alert" className="text-sm font-medium text-danger">
+                        {error}
+                      </p>
+                    )}
+
+                    <button
+                      type="submit"
+                      disabled={submitting}
+                      aria-busy={submitting}
+                      className={buttonClasses("primary", "lg", "w-full")}
+                    >
+                      {submitting && (
+                        <Loader2 size={18} aria-hidden className="animate-spin" />
+                      )}
+                      {submitting ? "Sending…" : "Confirm reservation"}
+                    </button>
+                    {/* text-muted, not text-subtle: subtle is 3.19:1 on white and
+                        this is reassurance copy, not decoration. */}
+                    <p className="text-center text-xs text-text-muted">
+                      No payment needed · Free cancellation · We hold your table for
+                      15 minutes.
                     </p>
-                  )}
-
-                  <button type="submit" className={buttonClasses("primary", "lg", "w-full")}>
-                    Confirm reservation
-                  </button>
-                  <p className="text-center text-xs text-text-subtle">
-                    No payment needed. We&apos;ll hold your table for 15 minutes.
-                  </p>
-                </form>
-              </>
-            )}
+                  </form>
+                </>
+              )}
+            </div>
           </div>
-        </div>
+        </div>,
+        document.body,
       )}
     </>
   );
 }
 
+// text-base (16px), not text-sm: mobile Safari zooms the viewport on focus for
+// any input under 16px, which yanks the layout mid-booking. py-3 keeps the
+// control at the 44px minimum target size.
+//
+// No `outline-none` here. It used to be, which killed the caramel focus ring —
+// the base-layer rule in theme.css is written with :where() and so has zero
+// specificity, losing to any utility that sets outline.
 const fieldClass =
-  "w-full rounded-md border border-border-strong bg-surface-cream px-3.5 py-2.5 text-sm text-text " +
-  "placeholder:text-text-subtle focus:border-primary focus:outline-none focus-visible:outline-none";
+  "w-full rounded-md border border-border-strong bg-surface-cream px-3.5 py-3 text-base text-text " +
+  "placeholder:text-text-subtle focus:border-primary";
 
 function Field({
   label,

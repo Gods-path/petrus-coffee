@@ -146,7 +146,7 @@ export default function AboutPage() {
           {values.map(({ icon: Icon, title, body }) => (
             <li
               key={title}
-              className="rounded-xl bg-espresso-800/60 p-6 ring-1 ring-[color:var(--color-border-inverse)]"
+              className="rounded-xl bg-espresso-800/60 p-6 ring-1 ring-border-inverse"
             >
               <span className="grid h-11 w-11 place-items-center rounded-pill bg-accent/20 text-accent">
                 <Icon size={22} aria-hidden />

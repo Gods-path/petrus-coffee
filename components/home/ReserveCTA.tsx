@@ -3,7 +3,7 @@ import { ReserveDialog } from "./ReserveDialog";
 
 export function ReserveCTA() {
   return (
-    <section className="py-[var(--section-py)]">
+    <section className="py-section">
       <Container>
         <div className="relative overflow-hidden rounded-2xl bg-primary px-6 py-14 text-center text-on-primary sm:px-12">
           {/* subtle caramel glow */}
